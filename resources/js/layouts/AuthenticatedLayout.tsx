@@ -92,8 +92,12 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                                             <span className="text-sm font-medium text-gray-800">{auth.user.name}</span>
                                             <span className="text-xs text-gray-500">{auth.user.role}</span>
                                         </div>
-                                        <div className="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-                                            {auth.user.name.charAt(0)}
+                                        <div className="h-10 w-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold overflow-hidden shrink-0">
+                                            {auth.user.photo ? (
+                                                <img src={`/storage/${auth.user.photo}`} alt={auth.user.name} className="h-full w-full object-cover" />
+                                            ) : (
+                                                auth.user.name.charAt(0)
+                                            )}
                                         </div>
                                     </div>
 
@@ -119,8 +123,12 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                                     onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}
                                     className="flex items-center focus:outline-none"
                                 >
-                                    <div className="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-                                        {auth.user.name.charAt(0)}
+                                    <div className="h-9 w-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold overflow-hidden shrink-0">
+                                        {auth.user.photo ? (
+                                            <img src={`/storage/${auth.user.photo}`} alt={auth.user.name} className="h-full w-full object-cover" />
+                                        ) : (
+                                            auth.user.name.charAt(0)
+                                        )}
                                     </div>
                                 </button>
                             </div>
@@ -130,11 +138,20 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                     {/* Mobile Dropdown Menu */}
                     {showingNavigationDropdown && (
                         <div className="md:hidden border-t border-gray-200 bg-white">
-                            <div className="px-4 py-3">
-                                <div className="text-base font-medium text-gray-800">
-                                    {auth.user.name}
+                            <div className="px-4 py-3 flex items-center space-x-3">
+                                <div className="h-10 w-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold overflow-hidden shrink-0">
+                                    {auth.user.photo ? (
+                                        <img src={`/storage/${auth.user.photo}`} alt={auth.user.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                        auth.user.name.charAt(0)
+                                    )}
                                 </div>
-                                <div className="text-sm font-medium text-gray-500">{auth.user.role}</div>
+                                <div>
+                                    <div className="text-base font-medium text-gray-800">
+                                        {auth.user.name}
+                                    </div>
+                                    <div className="text-sm font-medium text-gray-500">{auth.user.role}</div>
+                                </div>
                             </div>
 
                             <div className="border-t border-gray-200 pb-1">

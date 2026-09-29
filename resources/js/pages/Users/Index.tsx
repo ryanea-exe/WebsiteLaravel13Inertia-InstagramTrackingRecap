@@ -148,9 +148,9 @@ export default function Index({ users, filters, seksis }: UsersIndexProps) {
                                         <tr key={user.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center text-gray-500 font-bold text-xl uppercase">
+                                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center text-gray-500 font-bold text-xl uppercase shrink-0">
                                                         {user.photo ? (
-                                                            <img className="h-10 w-10 rounded-full object-cover" src={`/storage/${user.photo}`} alt={user.name} />
+                                                            <img className="h-full w-full object-cover" src={`/storage/${user.photo}`} alt={user.name} />
                                                         ) : (
                                                             user.name.charAt(0)
                                                         )}
