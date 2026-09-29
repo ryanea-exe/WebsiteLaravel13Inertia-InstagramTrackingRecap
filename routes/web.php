@@ -16,3 +16,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
+
+Route::middleware(['auth', 'can:admin'])->group(function () {
+    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show', 'destroy']);
+});
