@@ -157,8 +157,11 @@ Contoh:
 app/Services/Instagram/
 ├── InstagramClient.php
 ├── InstagramSyncService.php
-├── InstagramMediaService.php
-├── InstagramCommentService.php
+├── InstagramMediaSyncService.php
+├── InstagramCommentSyncService.php
+├── InstagramMetricSyncService.php
+├── EmployeeInstagramLinkService.php
+├── RankingService.php
 └── DTO/
 ```
 
@@ -169,8 +172,9 @@ Prinsip:
 - Pagination ditangani di service.
 - Response API dinormalisasi sebelum masuk model.
 - External ID digunakan sebagai identity.
-- Raw payload dapat disimpan jika diperlukan untuk debugging/audit.
+- Raw payload dapat disimpan (JSONB) dengan policy retention (misal 90 hari) untuk audit.
 - API capability harus diverifikasi terhadap dokumentasi resmi sebelum implementasi.
+- Webhook signature (`X-Hub-Signature-256`) harus diverifikasi menggunakan Meta App Secret.
 
 ## 6. Data Flow
 
@@ -229,6 +233,8 @@ instagram_comments.commenter_instagram_user_id
 
 Username hanya atribut display/search.
 
+Proses Auto-Link via Username DILARANG. Admin harus melakukan **Verifikasi Manual** melalui UI untuk menautkan (LINK) employee yang berstatus UNLINKED dengan komentar `unmatched` dari calon pegawai.
+
 Jika username berubah:
 - employee tetap sama;
 - comment history tetap terhubung;
@@ -237,12 +243,12 @@ Jika username berubah:
 
 ## 9. Reporting Period
 
-Media masuk ke periode jika:
+Komentar (dan interaksi) masuk ke periode jika menggunakan Half-Open Interval:
 
 ```text
-published_at >= start_at
+commented_at >= start_at
 AND
-published_at <= end_at
+commented_at < end_at
 ```
 
 Timezone reporting harus diperhitungkan secara konsisten.

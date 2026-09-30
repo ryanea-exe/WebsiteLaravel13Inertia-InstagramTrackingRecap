@@ -61,15 +61,22 @@ berjalan dari `my-project`.
 
 ## Phase 3 — Database Schema
 
-Buat migration dan model untuk:
+Task Sequence:
+- 32C-1 Documentation Sync & Design Lock
+- 32C-2 Database Migrations
+- 32C-3 Eloquent Models & Relationships
+- 32C-4 Factories / Seeders / Automated Tests
+- 32C-QA Database Verification
 
-- [ ] employees
-- [ ] instagram_accounts
-- [ ] reporting_periods
-- [ ] instagram_media
-- [ ] instagram_media_metric_snapshots
-- [ ] instagram_comments
-- [ ] sync_logs
+Future phases:
+- 32D Instagram Account Management
+- 32E Meta API Connection
+- 32F Media Sync
+- 32G Comment Sync
+- 32H Employee Instagram Linking
+- 32I Ranking & Reporting
+- 32J Dashboard / Statistics
+- 32K Final Instagram Integration QA
 
 Tambahkan:
 - [ ] foreign keys

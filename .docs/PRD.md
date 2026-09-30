@@ -39,13 +39,12 @@ Sistem harus dapat:
 
 Sistem **tidak boleh mengasumsikan kemampuan API yang tidak tersedia secara resmi**.
 
-MVP tidak menjanjikan pelacakan identitas pengguna yang memberikan Like atau Share/Repost secara individual.
+MVP tidak menjanjikan pelacakan identitas pengguna yang memberikan Like atau Share/Repost secara individual karena batasan privasi Meta Graph API.
+Jika API resmi menyediakan metrik agregat, sistem dapat menyimpan metrik tersebut (seperti total like), tetapi metrik agregat tidak boleh dianggap sebagai daftar user yang melakukan engagement.
 
-Jika API resmi menyediakan metrik agregat, sistem dapat menyimpan metrik tersebut, tetapi metrik agregat tidak boleh dianggap sebagai daftar user yang melakukan engagement.
+Engagement individu yang dapat dikaitkan ke pegawai untuk MVP **HANYA COMMENT**.
 
-Aktivitas karyawan yang dapat diverifikasi melalui data commenter dapat digunakan untuk employee-level tracking.
-
-Username Instagram dianggap atribut yang dapat berubah. **Instagram User ID menjadi identifier utama**.
+Username Instagram dianggap atribut yang dapat berubah. **Instagram User ID menjadi identifier utama**. Pegawai tidak boleh di-auto-link hanya berdasarkan kesamaan username; admin harus melakukan verifikasi manual dari daftar komentar unmatched.
 
 ## 4. Pengguna Sistem
 
@@ -71,6 +70,7 @@ Akun Instagram organisasi yang dipantau.
 
 Data penting:
 - internal ID
+- Facebook Page ID
 - Instagram User ID
 - username
 - account name
@@ -89,6 +89,8 @@ Data penting:
 - department
 - Instagram User ID
 - Instagram username
+- instagram_link_status (UNLINKED / LINKED)
+- instagram_linked_at
 - active status
 
 ### Reporting Period
@@ -101,9 +103,9 @@ Data:
 - timezone
 - status
 
-Media masuk ke periode apabila:
+Komentar masuk ke periode apabila (Half-Open Interval):
 
-`published_at >= start_at AND published_at <= end_at`
+`commented_at >= start_at AND commented_at < end_at`
 
 ### Instagram Media
 Konten Instagram organisasi.
@@ -138,7 +140,7 @@ Contoh:
 - shares
 - saves
 - reach
-- impressions
+- views
 
 Field dibuat nullable karena tidak semua metrik selalu tersedia dari API.
 
@@ -159,9 +161,9 @@ Admin dapat:
 ### FR-03 Employee Management
 Admin dapat:
 - tambah/edit/nonaktifkan karyawan;
-- memasukkan Instagram User ID;
-- menyimpan username sebagai informasi tampilan;
-- memperbarui username tanpa mengganti identity utama.
+- menyimpan username sebagai informasi tampilan (search candidate);
+- memperbarui username tanpa mengganti identity utama;
+- melakukan verifikasi manual (menautkan ID) terhadap komentar "Unmatched" dari calon pegawai.
 
 ### FR-04 Reporting Period
 Admin dapat:
@@ -196,7 +198,7 @@ Jika API menyediakan nilai agregat:
 - shares
 - saves
 - reach
-- impressions
+- views
 
 maka nilai dapat disimpan sesuai capability API.
 
@@ -226,10 +228,16 @@ Leaderboard dapat difilter berdasarkan:
 - metric.
 
 Contoh metric:
-- total comments;
-- unique media commented.
+- total unique non-deleted comments (1 unique external Instagram comment = 1 point).
 
-Urutan leaderboard harus ditentukan secara eksplisit oleh metric yang dipilih, bukan oleh label subjektif.
+Komentar hanya dihitung jika:
+- tidak soft-deleted
+- commented_at >= start_at AND commented_at < end_at
+- memiliki matched_employee_id
+- employee masih aktif
+- dari source account terdaftar
+
+Urutan leaderboard harus ditentukan secara eksplisit oleh metric di atas. Peringkat Like/Repost individual ditiadakan dari MVP.
 
 ### FR-11 Media Detail
 Detail media menampilkan:

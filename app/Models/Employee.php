@@ -17,6 +17,8 @@ class Employee extends Model
         'department',
         'instagram_user_id',
         'instagram_username',
+        'instagram_link_status',
+        'instagram_linked_at',
         'is_active',
     ];
 
@@ -24,6 +26,12 @@ class Employee extends Model
     {
         return [
             'is_active' => 'boolean',
+            'instagram_linked_at' => 'datetime',
         ];
+    }
+
+    public function instagramComments()
+    {
+        return $this->hasMany(InstagramComment::class, 'matched_employee_id');
     }
 }

@@ -21,9 +21,21 @@ class EmployeeFactory extends Factory
             'employee_code' => 'EMP-' . $this->faker->unique()->numerify('#####'),
             'name' => $this->faker->name(),
             'department' => $this->faker->randomElement(['IT', 'Marketing', 'HR', 'Finance']),
-            'instagram_user_id' => $this->faker->unique()->numerify('##########'),
-            'instagram_username' => $this->faker->unique()->userName(),
+            'instagram_user_id' => null,
+            'instagram_username' => null,
+            'instagram_link_status' => 'UNLINKED',
+            'instagram_linked_at' => null,
             'is_active' => true,
         ];
+    }
+
+    public function linkedToInstagram(): self
+    {
+        return $this->state(fn (array $attributes) => [
+            'instagram_user_id' => 'dummy_ig_' . $this->faker->unique()->numerify('######'),
+            'instagram_username' => 'employee_test_' . $this->faker->unique()->numerify('###'),
+            'instagram_link_status' => 'LINKED',
+            'instagram_linked_at' => now(),
+        ]);
     }
 }

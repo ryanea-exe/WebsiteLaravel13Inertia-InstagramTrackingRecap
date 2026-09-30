@@ -41,6 +41,8 @@ name
 department                 nullable
 instagram_user_id          nullable, unique
 instagram_username         nullable
+instagram_link_status      NOT NULL, default: 'UNLINKED'
+instagram_linked_at        timestamp nullable
 is_active
 created_at
 updated_at
@@ -59,12 +61,13 @@ Menyimpan akun Instagram organisasi.
 
 ```text
 id
-name
-instagram_user_id          unique
-username
-account_type               nullable
-connection_status
-access_token_encrypted
+facebook_page_id           nullable, unique
+instagram_user_id          NOT NULL, unique
+username                   NOT NULL
+name                       nullable
+account_type               NOT NULL, default: 'BUSINESS'
+connection_status          NOT NULL, default: 'CONNECTED'
+access_token_encrypted     NOT NULL (backend only)
 token_expires_at            nullable
 last_synced_at              nullable
 created_at
@@ -93,7 +96,7 @@ updated_at
 Constraint:
 
 ```text
-start_at <= end_at
+start_at < end_at
 ```
 
 ---
@@ -137,7 +140,7 @@ comments_count              nullable
 shares                      nullable
 saves                       nullable
 reach                       nullable
-impressions                 nullable
+views                       nullable
 raw_payload                 nullable
 created_at
 updated_at
@@ -156,13 +159,14 @@ Menyimpan komentar.
 
 ```text
 id
-instagram_media_id                    FK
+instagram_media_id                    FK (CASCADE)
 external_comment_id                    unique
-commenter_instagram_user_id            nullable
+commenter_instagram_user_id            nullable, INDEX
 commenter_username                     nullable
-matched_employee_id                    nullable FK
-text
-commented_at
+matched_employee_id                    nullable FK (NO ACTION / RESTRICT)
+text                                   nullable
+commented_at                           INDEX
+deleted_at                             nullable
 raw_payload                            nullable
 created_at
 updated_at
@@ -185,7 +189,7 @@ Mencatat aktivitas sinkronisasi.
 
 ```text
 id
-instagram_account_id       nullable FK
+instagram_account_id       FK (CASCADE), NOT NULL
 sync_type
 status
 started_at
@@ -207,23 +211,23 @@ Index:
 
 ```text
 InstagramAccount
-  ├── hasMany InstagramMedia
-  └── hasMany SyncLog
+  ├── hasMany InstagramMedia (CASCADE)
+  └── hasMany SyncLog (CASCADE)
 
 InstagramMedia
   ├── belongsTo InstagramAccount
-  ├── hasMany InstagramComment
-  └── hasMany MetricSnapshot
+  ├── hasMany InstagramComment (CASCADE)
+  └── hasMany MetricSnapshot (CASCADE)
 
 InstagramComment
   ├── belongsTo InstagramMedia
-  └── belongsTo Employee (nullable)
+  └── belongsTo Employee (nullable, RESTRICT/NO ACTION)
 
 Employee
   └── hasMany InstagramComment
 
 ReportingPeriod
-  └── digunakan sebagai filter berdasarkan published_at
+  └── digunakan sebagai filter dinamis dengan interval Half-Open.
 ```
 
 ## 4. Reporting Period Query
@@ -233,8 +237,8 @@ Tidak perlu membuat pivot `reporting_period_media` untuk MVP.
 Media ditentukan secara dinamis:
 
 ```sql
-WHERE published_at >= :start_at
-  AND published_at <= :end_at
+WHERE commented_at >= :start_at
+  AND commented_at < :end_at
 ```
 
 Jika timezone periode berbeda dengan timezone database, boundary harus dikonversi dengan benar sebelum query.
@@ -252,8 +256,9 @@ FROM instagram_comments
 JOIN instagram_media
   ON instagram_media.id = instagram_comments.instagram_media_id
 WHERE matched_employee_id IS NOT NULL
-  AND instagram_media.published_at >= :start_at
-  AND instagram_media.published_at <= :end_at
+  AND instagram_comments.deleted_at IS NULL
+  AND instagram_comments.commented_at >= :start_at
+  AND instagram_comments.commented_at < :end_at
 GROUP BY matched_employee_id;
 ```
 
