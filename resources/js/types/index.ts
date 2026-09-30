@@ -14,6 +14,19 @@ export interface User {
     seksi?: Seksi | null;
 }
 
+export interface Employee {
+    id: number;
+    employee_code: string;
+    name: string;
+    department?: string | null;
+    instagram_user_id?: string | null;
+    instagram_username?: string | null;
+    is_active: boolean;
+    created_at?: string;
+    updated_at?: string;
+    deleted_at?: string | null;
+}
+
 export interface PaginationLink {
     url: string | null;
     label: string;

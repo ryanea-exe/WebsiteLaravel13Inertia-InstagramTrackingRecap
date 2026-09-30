@@ -39,14 +39,25 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
 
                     {/* User Management - Only for Admin */}
                     {auth.user.role === 'Administrator' && (
-                        <Link
-                            href="/users"
-                            className={`block px-4 py-2 text-sm font-medium rounded-md ${
-                                usePage().url.startsWith('/users') ? 'text-blue-700 bg-blue-100' : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            User Management
-                        </Link>
+                        <>
+                            <Link
+                                href="/users"
+                                className={`block px-4 py-2 text-sm font-medium rounded-md ${
+                                    usePage().url.startsWith('/users') ? 'text-blue-700 bg-blue-100' : 'text-gray-700 hover:bg-gray-200'
+                                }`}
+                            >
+                                User Management
+                            </Link>
+                            
+                            <Link
+                                href="/employees"
+                                className={`block px-4 py-2 text-sm font-medium rounded-md ${
+                                    usePage().url.startsWith('/employees') ? 'text-blue-700 bg-blue-100' : 'text-gray-700 hover:bg-gray-200'
+                                }`}
+                            >
+                                Employee Management
+                            </Link>
+                        </>
                     )}
                 </nav>
             </aside>
@@ -170,6 +181,20 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
 
                 {/* Page Content */}
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+                    {usePage<PageProps>().props.flash?.success && (
+                        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+                            <div className="p-4 bg-green-100 border border-green-400 text-green-700 rounded relative" role="alert">
+                                <span className="block sm:inline">{usePage<PageProps>().props.flash.success}</span>
+                            </div>
+                        </div>
+                    )}
+                    {usePage<PageProps>().props.flash?.error && (
+                        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+                            <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded relative" role="alert">
+                                <span className="block sm:inline">{usePage<PageProps>().props.flash.error}</span>
+                            </div>
+                        </div>
+                    )}
                     {children}
                 </main>
             </div>

@@ -19,4 +19,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show', 'destroy']);
+    
+    Route::resource('employees', \App\Http\Controllers\EmployeeController::class)->except(['show']);
+    Route::patch('employees/{employee}/restore', [\App\Http\Controllers\EmployeeController::class, 'restore'])->name('employees.restore');
 });
