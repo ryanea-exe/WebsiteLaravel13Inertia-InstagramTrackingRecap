@@ -176,6 +176,14 @@ Prinsip:
 - API capability harus diverifikasi terhadap dokumentasi resmi sebelum implementasi.
 - Webhook signature (`X-Hub-Signature-256`) harus diverifikasi menggunakan Meta App Secret.
 
+### OAuth & Token Architecture (Instagram Login)
+- Menggunakan **Instagram Login for Business** (tidak memerlukan Facebook Page).
+- Development account: `@ryanea__`.
+- OAuth Initiation & Callback ditangani secara internal. `state` OAuth disimpan di session.
+- Token ditukar dua tahap: *Short-lived token* -> *Long-lived token*.
+- Long-lived token disimpan dengan `encrypted` cast di database, dan tidak pernah ditampilkan ke frontend.
+- Identitas akun menggunakan `instagram_user_id` yang diperoleh melalui Endpoint Account Discovery (`/me`).
+
 ## 6. Data Flow
 
 ```text

@@ -22,4 +22,8 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     
     Route::resource('employees', \App\Http\Controllers\EmployeeController::class)->except(['show']);
     Route::patch('employees/{employee}/restore', [\App\Http\Controllers\EmployeeController::class, 'restore'])->name('employees.restore');
+
+    // Instagram OAuth
+    Route::get('/admin/instagram/connect', [\App\Http\Controllers\MetaOAuthController::class, 'connect'])->name('meta.connect');
+    Route::get('/oauth/meta/callback', [\App\Http\Controllers\MetaOAuthController::class, 'callback'])->name('meta.callback');
 });
